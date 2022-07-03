@@ -1,5 +1,6 @@
 package com.example.annotaions;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 public class Main {
@@ -21,18 +22,13 @@ public class Main {
         AnnotationExecute annotationExecute = new AnnotationExecute();
         System.out.println(annotationExecute.execute());
         System.out.println("-------------------------");
+        
+        getSum();
+    }
 
+    private static void getSum() {
         int sum = Arrays.stream(Main.class.getDeclaredFields())
-                .filter(field ->
-                        Arrays.stream(field.getAnnotations())
-                                .toList()
-                                .stream()
-                                .filter(annotation ->
-                                        annotation
-                                                .annotationType()
-                                                .equals(AddAll.class))
-                                .toList()
-                                .size() > 0)
+                .filter(field -> field.getAnnotation(AddAll.class) != null)
                 .mapToInt(field -> {
                     try {
                         return (int) field.get(null);
@@ -43,5 +39,4 @@ public class Main {
                 .sum();
         System.out.println(sum);
     }
-
 }
